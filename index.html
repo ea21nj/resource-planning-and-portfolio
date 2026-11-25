@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Liberty Leadership</title>
+<title>Resource planning and portfolio</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -921,7 +921,7 @@ button.k4{cursor:pointer}button.k4:hover,.k4m:hover{background:var(--sunken)}but
 <header class="topbar" id="topbar"></header>
 <nav class="apptabs" id="nav" aria-label="Sections"></nav>
 <main class="main" id="view"></main>
-<p class="foot2">Concept with sample data. Names, hours and projects are illustrative, not Liberty staff or records.</p>
+<p class="foot2">Concept with sample data. Names, hours and projects are illustrative, not real staff or records.</p>
 <nav class="bottomnav" id="bnav" aria-label="Sections"></nav>
 <div class="scrim" id="scrim" hidden></div>
 <section class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle" hidden></section>
@@ -955,83 +955,235 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const START=new Date(2026,10,30), WEEKS=12;
 const wk=i=>{const d=new Date(START);d.setDate(d.getDate()+7*i);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});};
 const TYPES={project:'Project',support:'Support request',routine:'Routine upkeep',meeting:'Meeting action',unplanned:'Surprise'};
-const DEPTS=['Marketing','Information Technology','Human Resources','Finance','Facilities','Admin / Program','Clinical'];
-const SHORT={'Information Technology':'IT','Human Resources':'HR'};
-const PEOPLE=[
-  {id:'p1',n:'Jordan Ellis',role:'Marketing coordinator',d:'Marketing',cap:36},{id:'p2',n:'Sam Ortiz',role:'Web specialist',d:'Marketing',cap:32},
-  {id:'p3',n:'Priya Nair',role:'IT manager',d:'Information Technology',cap:40},{id:'p4',n:'Leo Martins',role:'Systems analyst',d:'Information Technology',cap:40},{id:'p5',n:'Grace Kim',role:'Support specialist',d:'Information Technology',cap:40},
-  {id:'p6',n:'Nadia Brooks',role:'HR manager',d:'Human Resources',cap:40},{id:'p7',n:'Owen Carter',role:'HR generalist',d:'Human Resources',cap:36},
-  {id:'p8',n:'Rosa Delgado',role:'Controller',d:'Finance',cap:40},{id:'p9',n:'Theo Grant',role:'Facilities lead',d:'Facilities',cap:40},
-  {id:'p10',n:'Mia Chen',role:'Program director',d:'Admin / Program',cap:36},{id:'p11',n:'Ben Adeyemi',role:'Program analyst',d:'Admin / Program',cap:36},
-  {id:'p12',n:'Hannah Lowe',role:'Clinic manager',d:'Clinical',cap:32}
-];
-const TIMEOFF=[{p:'p1',w:3,h:16},{p:'p5',w:4,h:40},{p:'p3',w:4,h:16},{p:'p8',w:4,h:24},{p:'p12',w:3,h:16}];
-const PROJECTS=[
-  {n:'Clinic East Side',div:'Integrative Healthcare',owner:'Clinic manager',sponsor:'VP, Integrative Healthcare',stage:'In progress',pri:'High',s:-8,e:7,pct:52,goal:'Open the East Side clinic with staff, systems and signage ready on day one.',ms:[['Lease signed',-8,1],['Hiring complete',4],['Systems live',6],['Doors open',7]]},
-  {n:'FS Weekend Hours Rollout',div:'Family Services',owner:'Family Services director',sponsor:'VP, Family Services',stage:'Launching',pri:'High',s:-4,e:5,pct:70,goal:'Offer Saturday and Sunday family services hours at two sites.',ms:[['Staffing plan approved',-3,1],['Scheduling live',1],['First weekend open',5]]},
-  {n:'IH Telehealth Pilot',div:'Integrative Healthcare',owner:'Telehealth lead',sponsor:'VP, Integrative Healthcare',stage:'Planning',pri:'Medium',s:1,e:8,pct:10,goal:'Pilot video visits for follow-up appointments in one program.',ms:[['Consent workflow approved',3],['Platform configured',7],['Pilot start',8]]},
-  {n:'DS Case Mgmt Dashboard',div:'Disability Services',owner:'DS program analyst',sponsor:'VP, Disability Services',stage:'In progress',pri:'Medium',s:-6,e:9,pct:35,goal:'Give case managers one view of caseload, deadlines and outcomes.',ms:[['Data definitions signed off',4],['Beta to two teams',7],['Rollout',9]]},
-  {n:'Post Equipment Refresh',div:'Post',owner:'Post clinic manager',sponsor:'Director, Post',stage:'In progress',pri:'Low',s:-2,e:6,pct:30,goal:'Replace end-of-life PT and OT equipment at both clinics.',ms:[['Orders placed',0],['Install complete',6]]},
-  {n:'Acquisition: Sunrise',div:'Administrative',owner:'COO office',sponsor:'CEO',stage:'Not approved yet',pri:'High',s:6,e:11,pct:0,goal:'Integrate Sunrise programs, staff and facilities if the acquisition proceeds.',ms:[['Board decision',5],['Day-one readiness',11]]},
-  {n:'Wee Care website redesign',div:'Family Services',owner:'Marketing coordinator',sponsor:'VP, Family Services',stage:'Not approved yet',pri:'Low',s:4,e:9,pct:0,goal:'Rebuild the Wee Care site so families find enrollment information fast.',ms:[['Content plan',6],['Launch',9]]}
-];
-const AREAS=['LRI website','Wee Care website','POST website','AURORA website support','IT Help Desk','HR Operations','Facilities Requests','Finance Close'];
-let ITEMS=[
-  ['Update program pages for new services','project','p1',6,2,6,['Clinic East Side','FS Weekend Hours Rollout','LRI website']],
-  ['Recruiting campaign: clinical and weekend staff','project','p1',8,0,5,['Clinic East Side','FS Weekend Hours Rollout']],
-  ['Monthly newsletter','routine','p1',6,0,11,[]],
-  ['Board meeting follow-ups','meeting','p1',4,1,2,[]],
-  ['Open house promotion','support','p1',6,3,4,['Clinic East Side','Wee Care website']],
-  ['Wee Care site redesign: content plan','project','p1',10,4,9,['Wee Care website redesign','Wee Care website'],1],
-  ['LRI website upkeep','routine','p2',5,0,11,['LRI website']],
-  ['Wee Care website upkeep','routine','p2',3,0,11,['Wee Care website']],
-  ['POST website upkeep','routine','p2',3,0,11,['POST website']],
-  ['AURORA website support, as requested','routine','p2',2,0,11,['AURORA website support']],
-  ['Disability Services program page edit','support','p2',4,0,1,['LRI website']],
-  ['East Side network and devices','project','p3',20,0,7,['Clinic East Side']],
-  ['File server outage recovery','unplanned','p3',16,2,2,['IT Help Desk']],
-  ['Vendor meeting action items','meeting','p3',4,1,3,[]],
-  ['Security patch cycle','routine','p3',6,0,11,['IT Help Desk']],
-  ['Case management dashboard build','project','p4',12,0,9,['DS Case Mgmt Dashboard']],
-  ['Telehealth platform configuration','project','p4',14,2,8,['IH Telehealth Pilot']],
-  ['Help desk escalations','routine','p4',10,0,11,['IT Help Desk']],
-  ['Help desk queue','routine','p5',30,0,11,['IT Help Desk']],
-  ['Laptop and account setup for weekend staff','support','p5',8,1,4,['FS Weekend Hours Rollout','IT Help Desk']],
-  ['Payroll and benefits administration','routine','p6',20,0,11,['HR Operations']],
-  ['East Side hiring','project','p6',14,1,8,['Clinic East Side']],
-  ['Sunrise staff transition planning','project','p6',8,6,11,['Acquisition: Sunrise','HR Operations'],1],
-  ['Shared onboarding for clinic and weekend hires','project','p7',8,2,7,['Clinic East Side','FS Weekend Hours Rollout','HR Operations']],
-  ['Weekend shift scheduling setup','project','p7',10,1,5,['FS Weekend Hours Rollout']],
-  ['Employee questions and records','routine','p7',12,0,11,['HR Operations']],
-  ['Month-end close','routine','p8',18,0,11,['Finance Close']],
-  ['Budget variance follow-up','meeting','p8',6,0,1,['Finance Close']],
-  ['Equipment procurement','project','p8',6,0,3,['Post Equipment Refresh']],
-  ['Grant report financials','unplanned','p8',8,4,5,['Finance Close']],
-  ['Sunrise financial due diligence','project','p8',8,6,11,['Acquisition: Sunrise'],1],
-  ['Building maintenance rounds','routine','p9',22,0,11,['Facilities Requests']],
-  ['East Side fit-out and signage','project','p9',16,0,5,['Clinic East Side']],
-  ['Badge access changes, East Side','support','p9',4,2,5,['Clinic East Side','Facilities Requests']],
-  ['Equipment install','project','p9',10,3,6,['Post Equipment Refresh','Facilities Requests']],
-  ['Sunrise site walkthroughs','project','p9',6,6,11,['Acquisition: Sunrise'],1],
-  ['Program reporting and compliance','routine','p10',16,0,11,[]],
-  ['Draft telehealth consent workflow','meeting','p10',6,1,3,['IH Telehealth Pilot']],
-  ['Grant report, short-notice deadline','unplanned','p10',12,4,5,[]],
-  ['Dashboard data definitions','project','p11',8,0,5,['DS Case Mgmt Dashboard']],
-  ['Program reporting support','routine','p11',10,0,11,[]],
-  ['Clinic workflow design','project','p12',12,1,8,['Clinic East Side']],
-  ['Clinical caseload','routine','p12',16,0,11,[]]
-].map((r,i)=>({id:i+1,n:r[0],t:r[1],p:r[2],h:r[3],s:r[4],e:r[5],links:r[6],tent:!!r[7]}));
-let nextId=ITEMS.length+1;
-const REQUESTS=[
-  {id:'ds',n:'DS Intake Redesign',status:'Under review',by:'Disability Services',pri:'High',decideBy:-9,dur:8,lines:[{d:'Information Technology',h:10},{d:'Admin / Program',h:12},{d:'Marketing',h:4}]},
-  {id:'eh',n:'FS Evening Hours Pilot',status:'Submitted',by:'Family Services',pri:'Medium',decideBy:-3,dur:6,lines:[{d:'Human Resources',h:8},{d:'Marketing',h:6},{d:'Information Technology',h:6}]},
-  {id:'po',n:'Post Billing Cleanup',status:'Submitted',by:'Post',pri:'Low',decideBy:4,dur:4,lines:[{d:'Finance',h:10},{d:'Information Technology',h:4}]}
-];
-const FEED=[
-  {t:'Sam Ortiz logged a support request',s:'Disability Services program page edit · 2 hours ago'},
-  {t:'IT team lead moved a task to Grace Kim',s:'Laptop setup for weekend staff · Yesterday'},
-  {t:'Committee approved Post Equipment Refresh',s:'Last week'}
-];
+// ---------- industry packs ----------
+// Every pack fills the same slots, so the planner logic never changes: 12 people (p1..p12) across 7 teams, 7 projects, 8 ongoing areas,
+// 59 work items (43 live, 4 waiting for an owner, 7 done, 5 recent), 3 requests and a feed. Hours and weeks come from SKEL.
+const SKEL={
+  proj:[ // stage, priority, start wk, end wk, percent, milestone weeks, done-flags
+    ['In progress','High',-8,7,52,[-8,4,6,7],[1]],['Launching','High',-4,5,70,[-3,1,5],[1]],['Planning','Medium',1,8,10,[3,7,8],[]],
+    ['In progress','Medium',-6,9,35,[4,7,9],[]],['In progress','Low',-2,6,30,[0,6],[]],['Not approved yet','High',6,11,0,[5,11],[]],['Not approved yet','Low',4,9,0,[6,9],[]]],
+  items:[ // person, type, hours, start, end, links (P=project, A=area), tentative
+    ['p1','project',6,2,6,['P0','P1','A0']],['p1','project',8,0,5,['P0','P1']],['p1','routine',6,0,11,[]],['p1','meeting',4,1,2,[]],['p1','support',6,3,4,['P0','A1']],['p1','project',10,4,9,['P6','A1'],1],
+    ['p2','routine',5,0,11,['A0']],['p2','routine',3,0,11,['A1']],['p2','routine',3,0,11,['A2']],['p2','routine',2,0,11,['A3']],['p2','support',4,0,1,['A0']],
+    ['p3','project',20,0,7,['P0']],['p3','unplanned',16,2,2,['A4']],['p3','meeting',4,1,3,[]],['p3','routine',6,0,11,['A4']],
+    ['p4','project',12,0,9,['P3']],['p4','project',14,2,8,['P2']],['p4','routine',10,0,11,['A4']],
+    ['p5','routine',30,0,11,['A4']],['p5','support',8,1,4,['P1','A4']],
+    ['p6','routine',20,0,11,['A5']],['p6','project',14,1,8,['P0']],['p6','project',8,6,11,['P5','A5'],1],
+    ['p7','project',8,2,7,['P0','P1','A5']],['p7','project',10,1,5,['P1']],['p7','routine',12,0,11,['A5']],
+    ['p8','routine',18,0,11,['A7']],['p8','meeting',6,0,1,['A7']],['p8','project',6,0,3,['P4']],['p8','unplanned',8,4,5,['A7']],['p8','project',8,6,11,['P5'],1],
+    ['p9','routine',22,0,11,['A6']],['p9','project',16,0,5,['P0']],['p9','support',4,2,5,['P0','A6']],['p9','project',10,3,6,['P4','A6']],['p9','project',6,6,11,['P5'],1],
+    ['p10','routine',16,0,11,[]],['p10','meeting',6,1,3,['P2']],['p10','unplanned',12,4,5,[]],
+    ['p11','project',8,0,5,['P3']],['p11','routine',10,0,11,[]],
+    ['p12','project',12,1,8,['P0']],['p12','routine',16,0,11,[]]],
+  queue:[[0,'support',2,0,1,['P0','A0']],[1,'project',6,1,4,['P2']],[4,'support',3,1,3,['P1','P0','A6']],[2,'project',4,1,2,['P1','A5']]],
+  done:[['p9','project',4,-7,-6,['P0','A6']],['p8','meeting',2,-6,-5,['P0','A7']],['p6','project',6,-4,-1,['P0']],['p7','project',6,-4,-2,['P1']],['p11','meeting',4,-5,-4,['P3']],['p8','project',3,-2,-1,['P4']],['p12','meeting',2,-2,-1,['P0']]],
+  recent:[['p1','meeting',2,-2,-2,[],'todo'],['p1','support',1,-1,-1,['A0'],'todo'],['p1','project',3,-1,-1,['P0','A0'],'doing'],['p1','support',1,-2,-2,['A0'],'done'],['p1','support',2,0,0,[],'todo']],
+  timeoff:[['p1',3,16],['p5',4,40],['p3',4,16],['p8',4,24],['p12',3,16]],
+  req:[['Under review','High',-9,8,[[1,10],[5,12],[0,4]]],['Submitted','Medium',-3,6,[[2,8],[0,6],[1,6]]],['Submitted','Low',4,4,[[3,10],[1,4]]]],
+  dept:[0,0,1,1,1,2,2,3,4,5,5,6]
+};
+const PN=['Jordan Ellis','Sam Ortiz','Priya Nair','Leo Martins','Grace Kim','Nadia Brooks','Owen Carter','Rosa Delgado','Theo Grant','Mia Chen','Ben Adeyemi','Hannah Lowe'];
+// proj helper: [name, division index, owner, sponsor, goal, milestone names]
+const INDUSTRIES={
+health:{label:'Healthcare and human services',blurb:'Clinics, family services and program teams.',
+  depts:['Marketing','Information Technology','Human Resources','Finance','Facilities','Admin / Program','Clinical'],short:{'Information Technology':'IT','Human Resources':'HR'},
+  divs:['Administrative','Disability Services','Family Services','Integrative Healthcare','Clinics'],
+  ex:{work:'Example: Update intake form on the main website',proj:'Example: Family enrollment portal',area:'Example: Volunteer program'},
+  roles:['Marketing coordinator','Web specialist','IT manager','Systems analyst','Support specialist','HR manager','HR generalist','Controller','Facilities lead','Program director','Program analyst','Clinic manager'],
+  projects:[
+   ['Clinic East Side',3,'Clinic manager','VP, Integrative Healthcare','Open the East Side clinic with staff, systems and signage ready on day one.',['Lease signed','Hiring complete','Systems live','Doors open']],
+   ['Weekend Hours Rollout',2,'Family Services director','VP, Family Services','Offer Saturday and Sunday family services hours at two sites.',['Staffing plan approved','Scheduling live','First weekend open']],
+   ['Telehealth Pilot',3,'Telehealth lead','VP, Integrative Healthcare','Pilot video visits for follow-up appointments in one program.',['Consent workflow approved','Platform configured','Pilot start']],
+   ['Case Management Dashboard',1,'Program analyst','VP, Disability Services','Give case managers one view of caseload, deadlines and outcomes.',['Data definitions signed off','Beta to two teams','Rollout']],
+   ['Therapy Equipment Refresh',4,'Clinic manager','Director, Clinics','Replace end-of-life PT and OT equipment at both clinics.',['Orders placed','Install complete']],
+   ['Acquisition: Harbor Programs',0,'COO office','CEO','Integrate Harbor programs, staff and facilities if the acquisition proceeds.',['Board decision','Day-one readiness']],
+   ['Family Services website redesign',2,'Marketing coordinator','VP, Family Services','Rebuild the site so families find enrollment information fast.',['Content plan','Launch']]],
+  areas:['Main website','Family Services website','Clinics website','Donor portal support','IT Help Desk','HR Operations','Facilities Requests','Finance Close'],
+  names:['Update program pages for new services','Recruiting campaign: clinical and weekend staff','Monthly newsletter','Board meeting follow-ups','Open house promotion','Family site redesign: content plan',
+   'Main website upkeep','Family Services website upkeep','Clinics website upkeep','Donor portal support, as requested','Disability Services program page edit',
+   'East Side network and devices','File server outage recovery','Vendor meeting action items','Security patch cycle',
+   'Case management dashboard build','Telehealth platform configuration','Help desk escalations','Help desk queue','Laptop and account setup for weekend staff',
+   'Payroll and benefits administration','East Side hiring','Harbor staff transition planning',
+   'Shared onboarding for clinic and weekend hires','Weekend shift scheduling setup','Employee questions and records',
+   'Month-end close','Budget variance follow-up','Equipment procurement','Grant report financials','Harbor financial due diligence',
+   'Building maintenance rounds','East Side fit-out and signage','Badge access changes, East Side','Equipment install','Harbor site walkthroughs',
+   'Program reporting and compliance','Draft telehealth consent workflow','Grant report, short-notice deadline','Dashboard data definitions','Program reporting support','Clinic workflow design','Clinical caseload',
+   'Update clinic hours on the Google listing','Set up e-signature for telehealth consent','Badge photos for weekend and clinic hires','Weekend staff payroll codes',
+   'Site walkthrough with landlord','Clinic budget approved','Job postings for clinic roles','Weekend staffing plan','Requirements workshop','Equipment quotes collected','Exam room layout sign-off',
+   'Annual report photo selects to designer','Holiday closure banner on the website','East Side launch post drafts','Holiday hours post for social','Staff spotlight for the newsletter'],
+  src:['Request form · Clinic manager','Meeting action · Telehealth kickoff','Request form · HR generalist','Meeting action · Weekend hours check-in'],
+  req:[['Intake Redesign','Disability Services'],['Evening Hours Pilot','Family Services'],['Billing Cleanup','Clinics']],
+  feed:[['Sam Ortiz logged a support request','Disability Services program page edit · 2 hours ago'],['IT team lead moved a task to Grace Kim','Laptop setup for weekend staff · Yesterday'],['Committee approved Therapy Equipment Refresh','Last week']]},
+
+construction:{label:'Construction',blurb:'General contractors and specialty trades.',
+  depts:['Preconstruction','Project Management','Safety and HR','Accounting','Equipment and Fleet','Contracts and Admin','Field Operations'],short:{'Project Management':'PM','Safety and HR':'Safety'},
+  divs:['Commercial','Residential','Industrial','Public Works','Corporate'],
+  ex:{work:'Example: Price the Level 3 addendum',proj:'Example: Lakeside Elementary addition',area:'Example: Warranty callbacks'},
+  roles:['Senior estimator','Proposal coordinator','Senior project manager','Project engineer','Assistant project manager','Safety director','HR generalist','Controller','Fleet and equipment lead','Contracts manager','Document controller','General superintendent'],
+  projects:[
+   ['Riverside Medical Office Building',0,'Senior project manager','VP, Operations','Deliver the 42,000 sq ft medical office building on schedule for substantial completion.',['Foundations complete','Steel topped out','Building dried in','Substantial completion']],
+   ['Maple Street Townhomes',1,'Project manager','VP, Residential','Build 18 townhomes in three phases with no lost-time incidents.',['Permits issued','Framing complete','Final inspection']],
+   ['County Bridge Rehabilitation',3,'Project engineer','VP, Public Works','Rehabilitate the county bridge while keeping one lane open.',['Traffic plan approved','Girders set','Reopen to traffic']],
+   ['Northgate Warehouse Expansion',2,'Project manager','VP, Industrial','Add 60,000 sq ft to the Northgate warehouse around live operations.',['Design freeze','Slab pour','Owner handover']],
+   ['Crane Fleet Replacement',4,'Fleet and equipment lead','COO','Replace two aging tower cranes before next season.',['Quotes approved','Delivery and commissioning']],
+   ['Acquisition: Delta Concrete',4,'CFO office','CEO','Bring Delta Concrete crews, yards and contracts in if the deal closes.',['Board decision','Day-one readiness']],
+   ['Company website refresh',4,'Proposal coordinator','VP, Preconstruction','Show recent projects and safety record so owners can prequalify us faster.',['Content plan','Launch']]],
+  areas:['Bid board monitoring','Proposal library','Prequalification renewals','Subcontractor database','Project controls and RFIs','Safety and HR operations','Yard and fleet requests','Job cost and billing'],
+  names:['Price Riverside addendum 3','Bid leveling, Maple Street Townhomes','Weekly bid log and pipeline report','Preconstruction meeting follow-ups','Prequalification package for hospital owner','Delta Concrete proposal work packages',
+   'Bid board monitoring','Proposal library updates','Prequalification renewals','Subcontractor database upkeep','Rush estimate for owner change order',
+   'Riverside MEP coordination and RFIs','Concrete pump failure: schedule recovery','Owner meeting action items','Submittal log management',
+   'Warehouse shop drawing review','Bridge traffic control plan','RFI processing','Daily reports and RFI log','Mobilization checklist, Maple Street',
+   'Safety training and compliance tracking','Riverside site safety plan','Delta Concrete crew onboarding plan',
+   'Orientation for new field hires','Overtime and shift scheduling, Maple Street','Employee records and certifications',
+   'Month-end job cost close','WIP schedule review with owners','Crane purchase financing','Surety bond renewal, short notice','Delta Concrete due diligence',
+   'Equipment maintenance rounds','Riverside tower crane setup','Yard access and fuel card changes','Crane delivery and commissioning','Delta Concrete yard walkthroughs',
+   'Contract administration','Draft change order process','Prevailing wage audit, short notice','Closeout document tracking','Insurance certificates and lien waivers','Riverside site logistics plan','Superintendent daily duties',
+   'Add Riverside progress photos to bid portfolio','Configure drone survey software','Fuel card and gate access for sub crews','Weekend crew certification check',
+   'Site walkthrough with owner','Owner budget approved','Hire site laborers','Maple Street crew plan','Bridge design workshop','Crane quotes collected','Foundation inspection sign-off',
+   'Send project photos to the bid team','Holiday shutdown notice on bid portal','Riverside milestone announcement draft','Holiday schedule post','Crew spotlight for the newsletter'],
+  src:['Request form · Superintendent','Meeting action · OAC meeting','Request form · Foreman','Meeting action · Safety stand-down'],
+  req:[['Estimating Software Upgrade','Preconstruction'],['Night Work Pilot, Bridge','Field Operations'],['Subcontractor Payment Cleanup','Accounting']],
+  feed:[['Proposal coordinator logged a rush estimate','Owner change order · 2 hours ago'],['PM lead moved a task to the assistant PM','Maple Street mobilization · Yesterday'],['Leadership approved Crane Fleet Replacement','Last week']]},
+
+architecture:{label:'Architecture and design',blurb:'Architecture, interiors and engineering design firms.',
+  depts:['Marketing and BD','Design Technology','People and Culture','Finance','Studio Operations','Project Management Office','Architecture'],short:{'Design Technology':'Design Tech','Project Management Office':'PMO'},
+  divs:['Civic','Education','Healthcare','Residential','Firm'],
+  ex:{work:'Example: Update the schematic design deck',proj:'Example: Elm Street library renovation',area:'Example: Consultant coordination'},
+  roles:['Marketing coordinator','Proposals specialist','BIM manager','BIM specialist','CAD and IT support','People and culture manager','Recruiter','Controller','Studio operations lead','Project management director','Project coordinator','Principal architect'],
+  projects:[
+   ['Harborview Public Library',0,'Principal architect','Managing principal','Design and document the new 28,000 sq ft public library through permit.',['Programming approved','Schematic design','Design development','Permit set']],
+   ['Westbrook Elementary Addition',1,'Project architect','Education practice lead','Add eight classrooms and a commons to an occupied school.',['Site survey','Design approved by board','Bid set']],
+   ['Cedar Health Clinic Fit-out',2,'Project architect','Healthcare practice lead','Fit out a 12,000 sq ft clinic inside an existing shell.',['Layout approved','Construction documents','Bid']],
+   ['Lofts on Fourth, Interiors',3,'Interior designer','Residential practice lead','Select finishes and furniture for 40 loft units.',['Finish palette signed off','Procurement list','Install support']],
+   ['Studio Hardware Refresh',4,'Studio operations lead','Operations director','Replace workstations and plotters that no longer run the BIM model.',['Quotes approved','Rollout complete']],
+   ['Merger: Kline Associates',4,'Managing principal office','Managing principal','Combine staff, standards and projects if the merger proceeds.',['Partner vote','Day-one readiness']],
+   ['Firm website and portfolio refresh',4,'Marketing coordinator','Managing principal','Rebuild the portfolio so clients can filter by project type.',['Case study content','Launch']]],
+  areas:['Portfolio and awards','Proposal library','RFP tracking','Consultant database','BIM and CAD support','People operations','Studio and supplies','Billing and WIP'],
+  names:['Update public library case study','Healthcare RFP response: Cedar Clinic','Monthly newsletter','Partner meeting follow-ups','Open studio event promotion','Portfolio refresh: case study content',
+   'Portfolio and awards upkeep','Proposal library updates','RFP tracking and deadlines','Consultant database upkeep','Qualifications update for school district',
+   'Harborview Revit model setup','Server crash: model recovery','Vendor meeting action items','Software license and patch cycle',
+   'Project data dashboard build','Cedar Clinic family and parameter library','Model coordination issues','BIM and CAD help desk','Workstation setup for new hires',
+   'Payroll and benefits administration','Studio recruiting: project architects','Kline staff transition planning',
+   'Shared onboarding for new designers','Intern program scheduling','Employee questions and records',
+   'Month-end close','Project budget variance follow-up','Workstation procurement','Fee reimbursement report, short notice','Kline financial due diligence',
+   'Studio and supplies upkeep','Studio reconfiguration for new teams','Badge and key changes','Plotter and workstation install','Kline office walkthroughs',
+   'Project reporting and fee tracking','Draft consultant scope for Cedar Clinic','Permit response, short-notice deadline','Project data definitions','Project coordination support','Harborview design development','Principal design reviews',
+   'Update awards page after win','Set up e-signature for owner agreements','Badge photos for new hires','New hire payroll codes',
+   'Site walkthrough with owner','Programming budget approved','Job postings for designers','Intern program plan','Design workshop with school board','Workstation quotes collected','Schematic design sign-off',
+   'Annual report image selects','Holiday hours notice on the website','Harborview launch post drafts','Holiday studio post','Designer spotlight for the newsletter'],
+  src:['Request form · Principal','Meeting action · Design kickoff','Request form · Recruiter','Meeting action · Intern program check-in'],
+  req:[['BIM Standards Rewrite','Design Technology'],['Hybrid Studio Pilot','People and Culture'],['Billing Cleanup','Finance']],
+  feed:[['Proposals specialist logged a request','Qualifications update · 2 hours ago'],['BIM lead moved a task to the CAD support specialist','New hire workstation setup · Yesterday'],['Partners approved Studio Hardware Refresh','Last week']]},
+
+software:{label:'Software and IT services',blurb:'Product teams, engineering and customer success.',
+  depts:['Marketing','Engineering','People Operations','Finance','IT and Workplace','Product','Customer Success'],short:{'People Operations':'People','Customer Success':'CS'},
+  divs:['Core Platform','Mobile','Integrations','Data and AI','Internal'],
+  ex:{work:'Example: Update onboarding docs for v2',proj:'Example: Billing migration',area:'Example: Partner API support'},
+  roles:['Growth marketer','Content and web specialist','Engineering manager','Backend engineer','Support engineer','People operations manager','Recruiter','Finance lead','IT and workplace lead','Head of product','Product analyst','Customer success manager'],
+  projects:[
+   ['Platform v2 Launch',0,'Head of product','CTO','Ship v2 of the core platform with migration tooling for existing customers.',['Beta feedback closed','Migration tooling ready','Release candidate','General availability']],
+   ['Mobile App Relaunch',1,'Product manager','VP, Product','Relaunch the mobile app on the new design system.',['Design signed off','Beta in stores','Public release']],
+   ['Partner Integration Pilot',2,'Integrations lead','VP, Product','Pilot a marketplace integration with two launch partners.',['Partner agreement signed','API ready','Pilot go-live']],
+   ['Customer Analytics Dashboard',3,'Product analyst','VP, Product','Give customers one view of usage, adoption and outcomes.',['Metrics definitions signed off','Beta to ten accounts','General availability']],
+   ['Security Certification Prep',4,'IT and workplace lead','CTO','Complete the controls and evidence needed for SOC 2 Type II.',['Controls mapped','Audit window opens']],
+   ['Acquisition: Northwind Labs',4,'CEO office','CEO','Integrate Northwind people, code and customers if the deal proceeds.',['Board decision','Day-one readiness']],
+   ['Marketing site rebuild',4,'Growth marketer','VP, Marketing','Rebuild the marketing site so trials start faster.',['Content plan','Launch']]],
+  areas:['Marketing website','Docs site','Blog and changelog','Social channels','Customer support queue','People operations','Office and equipment','Billing and revenue ops'],
+  names:['Update pricing and feature pages for v2','Launch campaign: v2 and mobile','Monthly product newsletter','Leadership meeting follow-ups','Webinar promotion','Marketing site rebuild: content plan',
+   'Marketing website upkeep','Docs site upkeep','Blog and changelog upkeep','Social channel scheduling','Docs fix requested by support',
+   'v2 migration tooling','Production incident: database failover','Vendor meeting action items','Dependency and security patch cycle',
+   'Analytics dashboard build','Partner API integration','Support escalations','Customer support queue','Laptop and account setup for new hires',
+   'Payroll and benefits administration','Engineering hiring plan','Northwind staff transition planning',
+   'Shared onboarding for engineers and CS','Release week on-call scheduling','Employee questions and records',
+   'Month-end close','Budget variance follow-up','Cloud spend and vendor procurement','Investor report financials','Northwind financial due diligence',
+   'Office and equipment upkeep','Security audit evidence collection','Badge and access changes','Device encryption rollout','Northwind office walkthroughs',
+   'Roadmap reporting and planning','Draft partner integration spec','Customer escalation, short-notice deadline','Metrics definitions','Product reporting support','Onboarding workflow design','Customer health reviews',
+   'Update status page for new region','Set up SSO for partner pilot','Access reviews for new hires','On-call payroll codes',
+   'Kickoff with design partner','v2 budget approved','Job postings for engineers','Mobile release plan','Requirements workshop','Cloud vendor quotes collected','Architecture review sign-off',
+   'Annual report screenshots to design','Holiday support hours banner','v2 launch post drafts','Holiday hours post for social','Team spotlight for the newsletter'],
+  src:['Request form · Support lead','Meeting action · Partner kickoff','Request form · Recruiter','Meeting action · Release check-in'],
+  req:[['Self-serve Billing','Product'],['Follow-the-sun Support Pilot','Customer Success'],['Vendor Contract Cleanup','Finance']],
+  feed:[['Content specialist logged a support request','Docs fix requested by support · 2 hours ago'],['Engineering manager moved a task to the support engineer','Laptop setup for new hires · Yesterday'],['Leadership approved Security Certification Prep','Last week']]},
+
+consulting:{label:'Professional services and consulting',blurb:'Client engagements, delivery teams and back office.',
+  depts:['Marketing and BD','Delivery','People and Talent','Finance','Operations and IT','Strategy and PMO','Client Services'],short:{'Marketing and BD':'BD','People and Talent':'People'},
+  divs:['Advisory','Transformation','Managed Services','Training','Firm'],
+  ex:{work:'Example: Draft the discovery readout',proj:'Example: ERP selection for a new client',area:'Example: Retainer support'},
+  roles:['Marketing manager','Proposal writer','Delivery director','Senior consultant','Analyst','Talent manager','Recruiter','Finance manager','Operations and IT lead','PMO director','PMO analyst','Client services lead'],
+  projects:[
+   ['Meridian Transformation Program',1,'Delivery director','Managing partner','Run the 9-month operating model transformation for Meridian.',['Discovery complete','Design signed off','Pilot live','Handover']],
+   ['Atlas Systems Selection',0,'Senior consultant','Partner, Advisory','Help Atlas select and contract a new platform.',['Requirements approved','Vendor shortlist','Contract signed']],
+   ['Managed Services Pilot',2,'Client services lead','Partner, Managed Services','Pilot a managed reporting service for two clients.',['Scope approved','Platform configured','Pilot start']],
+   ['Utilization Dashboard',4,'PMO analyst','COO','Give leaders one view of utilization, backlog and margin.',['Definitions signed off','Beta to partners','Rollout']],
+   ['Laptop and Tooling Refresh',4,'Operations and IT lead','COO','Replace aging laptops and collaboration tools.',['Orders placed','Rollout complete']],
+   ['Acquisition: Brightline Advisors',4,'Managing partner office','Managing partner','Combine Brightline staff, clients and contracts if the deal proceeds.',['Partner vote','Day-one readiness']],
+   ['Thought leadership site refresh',4,'Marketing manager','Partner, Advisory','Rebuild the insights site so prospects find case studies fast.',['Content plan','Launch']]],
+  areas:['Case studies','Proposal library','RFP pipeline','Alumni and referrals','IT and tools support','People operations','Office and travel','Billing and collections'],
+  names:['Update case studies for new services','Campaign: transformation offering','Monthly insights newsletter','Partner meeting follow-ups','Webinar promotion','Insights site refresh: content plan',
+   'Case study upkeep','Proposal library updates','RFP pipeline tracking','Alumni and referral outreach','Rush proposal for existing client',
+   'Meridian engagement management','Key consultant unexpectedly out','Client steering meeting actions','Methodology and template updates',
+   'Utilization dashboard build','Pilot platform configuration','Analyst work reviews','Analysis and reporting queue','Laptop and account setup for new consultants',
+   'Payroll and benefits administration','Consultant recruiting','Brightline staff transition planning',
+   'Shared onboarding for consultants','Staffing and bench scheduling','Employee questions and records',
+   'Month-end close','Project margin variance follow-up','Laptop procurement','Audit request, short notice','Brightline financial due diligence',
+   'Office and travel upkeep','Meridian workshop logistics','Badge and access changes','Laptop rollout','Brightline office walkthroughs',
+   'Portfolio reporting and governance','Draft pilot scope','Executive report, short-notice deadline','Utilization definitions','PMO reporting support','Client onboarding design','Client health reviews',
+   'Update bios on the website','Set up e-signature for engagement letters','Access setup for new consultants','Contractor payroll codes',
+   'Kickoff with client sponsor','Engagement budget approved','Job postings for consultants','Bench staffing plan','Requirements workshop','Laptop quotes collected','Steering committee sign-off',
+   'Annual report headshots','Holiday hours notice on the website','Meridian launch post drafts','Holiday hours post for social','Consultant spotlight for the newsletter'],
+  src:['Request form · Client lead','Meeting action · Pilot kickoff','Request form · Recruiter','Meeting action · Staffing check-in'],
+  req:[['Knowledge Base Rebuild','Strategy and PMO'],['Offshore Delivery Pilot','Delivery'],['Invoicing Cleanup','Finance']],
+  feed:[['Proposal writer logged a rush request','Rush proposal · 2 hours ago'],['Delivery director moved a task to the analyst','Laptop setup for new consultants · Yesterday'],['Partners approved Laptop and Tooling Refresh','Last week']]},
+
+manufacturing:{label:'Manufacturing',blurb:'Plants, engineering, maintenance and quality.',
+  depts:['Sales and Marketing','Engineering','HR and Safety','Finance','Maintenance','Planning and Quality','Production'],short:{'Sales and Marketing':'Sales','HR and Safety':'HR'},
+  divs:['Plant 1','Plant 2','Corporate','Supply Chain','Quality'],
+  ex:{work:'Example: Update the part drawing package',proj:'Example: Line 3 retooling',area:'Example: Preventive maintenance'},
+  roles:['Marketing coordinator','Sales operations specialist','Engineering manager','Process engineer','CAD technician','HR and safety manager','HR generalist','Plant controller','Maintenance lead','Planning and quality director','Quality analyst','Production supervisor'],
+  projects:[
+   ['Line 3 Retooling',0,'Production supervisor','VP, Operations','Retool Line 3 for the new product family without missing customer shipments.',['Tooling ordered','Install complete','Trial runs','Full production']],
+   ['Second Shift Launch',0,'Plant manager','VP, Operations','Staff and start a second shift on Lines 1 and 2.',['Staffing plan approved','Scheduling live','First shift run']],
+   ['ERP Scheduling Module',2,'Planning and quality director','CFO','Roll out finite scheduling in the ERP.',['Data cleanup approved','Module configured','Go-live']],
+   ['Quality Dashboard',4,'Quality analyst','VP, Quality','Give supervisors one view of scrap, rework and audit status.',['Definitions signed off','Pilot on Line 1','Rollout']],
+   ['Press Replacement',0,'Maintenance lead','VP, Operations','Replace the end-of-life stamping press at Plant 1.',['Order placed','Install complete']],
+   ['Acquisition: Ridgeway Castings',2,'CFO office','CEO','Integrate Ridgeway staff, equipment and customers if the deal proceeds.',['Board decision','Day-one readiness']],
+   ['Customer portal redesign',2,'Marketing coordinator','VP, Sales','Rebuild the portal so customers find drawings and order status fast.',['Content plan','Launch']]],
+  areas:['Product catalog','Spec sheets and drawings','Customer quote pipeline','Distributor support','Engineering change requests','Safety and HR operations','Maintenance requests','Plant accounting'],
+  names:['Update catalog for new product family','Recruiting campaign: second shift operators','Monthly customer newsletter','Management meeting follow-ups','Trade show promotion','Customer portal redesign: content plan',
+   'Product catalog upkeep','Spec sheet and drawing upkeep','Customer quote pipeline tracking','Distributor support, as requested','Rush quote for key customer',
+   'Line 3 tooling design','Press line outage recovery','Supplier meeting action items','CAD and PLM backup cycle',
+   'Quality dashboard build','ERP scheduling configuration','Process change reviews','Engineering change requests','Workstation setup for second shift',
+   'Safety training and compliance tracking','Second shift hiring','Ridgeway staff transition planning',
+   'Shared onboarding for production hires','Second shift scheduling setup','Employee questions and records',
+   'Month-end close','Budget variance follow-up','Equipment procurement','Insurance audit, short notice','Ridgeway financial due diligence',
+   'Preventive maintenance rounds','Line 3 install and guarding','Lockout tagout and badge changes','Press install and commissioning','Ridgeway plant walkthroughs',
+   'Quality reporting and compliance','Draft scheduling rules','Customer audit, short-notice deadline','Scrap and rework definitions','Quality reporting support','Line 3 trial runs','Production line supervision',
+   'Update spec sheets for new alloy','Set up e-signature for supplier agreements','Badge photos for second shift hires','Second shift payroll codes',
+   'Site walkthrough with contractor','Line 3 budget approved','Job postings for operators','Second shift staffing plan','Requirements workshop','Press quotes collected','Line layout sign-off',
+   'Annual report photo selects','Holiday shutdown notice on the portal','Line 3 launch post drafts','Holiday schedule post','Operator spotlight for the newsletter'],
+  src:['Request form · Production supervisor','Meeting action · Tooling kickoff','Request form · HR generalist','Meeting action · Staffing check-in'],
+  req:[['MES Upgrade','Engineering'],['Weekend Maintenance Pilot','Maintenance'],['Supplier Payment Cleanup','Finance']],
+  feed:[['Sales ops specialist logged a rush quote','Rush quote for key customer · 2 hours ago'],['Engineering manager moved a task to the CAD technician','Second shift workstation setup · Yesterday'],['Leadership approved Press Replacement','Last week']]}
+};
+
+let IND='health'; try{ IND=localStorage.getItem('lw.industry')||'health'; }catch(_){}
+if(!INDUSTRIES[IND]) IND='health';
+const PK=INDUSTRIES[IND];
+const DEPTS=PK.depts, SHORT=PK.short, DIVS=PK.divs;
+const CAPS=[36,32,40,40,40,40,36,40,40,36,36,32];
+const PEOPLE=PN.map((n,i)=>({id:'p'+(i+1),n,role:PK.roles[i],d:DEPTS[SKEL.dept[i]],cap:CAPS[i]}));
+const TIMEOFF=SKEL.timeoff.map(([p,w,h])=>({p,w,h}));
+const PROJECTS=PK.projects.map((q,i)=>{const k=SKEL.proj[i];return {n:q[0],div:DIVS[q[1]],owner:q[2],sponsor:q[3],stage:k[0],pri:k[1],s:k[2],e:k[3],pct:k[4],goal:q[4],ms:q[5].map((m,j)=>k[6].includes(j)?[m,k[5][j],1]:[m,k[5][j]])};});
+const AREAS=PK.areas.slice();
+const LK=c=>c[0]==='P'?PK.projects[+c.slice(1)][0]:PK.areas[+c.slice(1)];
+let nextId=1;
+const ITEMS=[];
+SKEL.items.forEach(r=>ITEMS.push({id:nextId++,n:PK.names[ITEMS.length],t:r[1],p:r[0],h:r[2],s:r[3],e:r[4],links:r[5].map(LK),tent:!!r[6]}));
+SKEL.queue.forEach((r,k)=>ITEMS.push({id:nextId++,n:PK.names[ITEMS.length],t:r[1],p:null,team:DEPTS[r[0]],h:r[2],s:r[3],e:r[4],links:r[5].map(LK),tent:false,src:PK.src[k]}));
+SKEL.done.forEach((r,k)=>ITEMS.push({id:nextId++,n:PK.names[ITEMS.length],t:r[1],p:r[0],h:r[2],s:r[3],e:r[4],links:r[5].map(LK),tent:false,st:k===6?'doing':'done'}));
+SKEL.recent.forEach(r=>ITEMS.push({id:nextId++,n:PK.names[ITEMS.length],t:r[1],p:r[0],h:r[2],s:r[3],e:r[4],links:r[5].map(LK),tent:false,st:r[6]}));
+const REQUESTS=SKEL.req.map((r,i)=>({id:'r'+(i+1),n:PK.req[i][0],status:r[0],by:PK.req[i][1],pri:r[1],decideBy:r[2],dur:r[3],lines:r[4].map(([d,h])=>({d:DEPTS[d],h}))}));
+const FEED=PK.feed.map(([a,b])=>({t:a,s:b}));
 
 // ---------- math ----------
 const pById=id=>PEOPLE.find(p=>p.id===id)||{id:null,n:'Needs an owner',role:'',d:'Unassigned',cap:0};
@@ -1065,7 +1217,7 @@ function earliest(r){for(let s=0;s<WEEKS;s++) if(!Object.keys(overloads(r,s)).le
 
 
 // ---------- state ----------
-const st={apw:-2,apf:'all',apOpen:new Set(),mview:'tasks',tsw:-1,tsSub:{},tsConf:false,tsExtra:new Set(),pfHealth:'all',pfCap:false,pfMs:false,pfOpen:new Set(),pfpop:false,pfIns:false,exType:'all',exAll:false,pmoved:new Set(),undo:null,taskBack:null,role:null,rstep:null,atab:'work',wun:false,wod:false,wdoneOnly:false,wpop:false,dfilt:'all',tper:'last',tall:false,tsort:'status',wgroup:(()=>{try{return localStorage.getItem('lw.g1')||'type';}catch(_){return 'type';}})(),wg2:(()=>{try{return localStorage.getItem('lw.g2')||'none';}catch(_){return 'none';}})(),wsort:'due',whideDone:false,wclosed:new Set(),scope:'all',pfSort:{k:'attention',d:1},pfNeeds:false,pfOwner:'all',pfStage:'all',pfDiv:'all',acFilter:'all',umr:'14d',mode:'advanced',gclosed:new Set(),msRange:14,q:'',proj:null,ptab:'overview',wq:'all',wproj:'all',form:null,tab:'home',needAll:false,pf:'active',drawer:null,start:{},status:{},openTeam:null,req:'ds'};
+const st={apw:-2,apf:'all',apOpen:new Set(),mview:'tasks',tsw:-1,tsSub:{},tsConf:false,tsExtra:new Set(),pfHealth:'all',pfCap:false,pfMs:false,pfOpen:new Set(),pfpop:false,pfIns:false,exType:'all',exAll:false,pmoved:new Set(),undo:null,taskBack:null,role:null,rstep:null,atab:'work',wun:false,wod:false,wdoneOnly:false,wpop:false,dfilt:'all',tper:'last',tall:false,tsort:'status',wgroup:(()=>{try{return localStorage.getItem('lw.g1')||'type';}catch(_){return 'type';}})(),wg2:(()=>{try{return localStorage.getItem('lw.g2')||'none';}catch(_){return 'none';}})(),wsort:'due',whideDone:false,wclosed:new Set(),scope:'all',pfSort:{k:'attention',d:1},pfNeeds:false,pfOwner:'all',pfStage:'all',pfDiv:'all',acFilter:'all',umr:'14d',mode:'advanced',gclosed:new Set(),msRange:14,q:'',proj:null,ptab:'overview',wq:'all',wproj:'all',form:null,tab:'home',needAll:false,pf:'active',drawer:null,start:{},status:{},openTeam:null,req:'r1'};
 const TABS=[['home','Overview','home'],['teams','Teams','teams'],['portfolio','Portfolio','folder'],['ops','Operations','pulse']];
 const ATABS=[['work','Work','list'],['time','Time','clock'],['approvals','Timesheets','check'],['decisions','Decisions','check']];
 const ROUTES=['home','teams','portfolio','ops','analytics','time','approvals','decisions','work','admin'];
@@ -1428,12 +1580,6 @@ function dArea(n){
 
 // ---------- work queue ----------
 const UNASSIGNED={id:null,n:'Needs an owner',role:'',d:'Unassigned',cap:0};
-[
-  ['Update clinic hours on the Google listing','support','Marketing',2,0,1,['Clinic East Side','LRI website'],'Request form · Clinic manager'],
-  ['Set up e-signature for telehealth consent','project','Information Technology',6,1,4,['IH Telehealth Pilot'],'Meeting action · Telehealth kickoff'],
-  ['Badge photos for weekend and clinic hires','support','Facilities',3,1,3,['FS Weekend Hours Rollout','Clinic East Side','Facilities Requests'],'Request form · HR generalist'],
-  ['Weekend staff payroll codes','project','Human Resources',4,1,2,['FS Weekend Hours Rollout','HR Operations'],'Meeting action · Weekend hours check-in']
-].forEach(r=>ITEMS.push({id:nextId++,n:r[0],t:r[1],p:null,team:r[2],h:r[3],s:r[4],e:r[5],links:r[6],tent:false,src:r[7]}));
 const queue=()=>ITEMS.filter(i=>!i.p&&inScope(i));
 function suggest(team,h,s,e){
   const ps=PEOPLE.filter(p=>p.d===team); if(!ps.length) return null;
@@ -1527,7 +1673,7 @@ function dAddWork(){
   const pl=(arr)=>arr.map(n=>`<label class="ck"><input type="checkbox" data-act="flink" data-l="${esc(n)}" ${f.links.includes(n)?'checked':''}><span>${esc(n)}</span></label>`).join('');
   return `<div class="dh"><div><small>New work item</small><h2 id="dTitle">Add work</h2></div>${xBtn}</div>
     <div class="box fm">
-      <label for="f-n">What needs to happen<input type="text" id="f-n" value="${esc(f.n)}" placeholder="Example: Update intake form on the LRI site"></label>
+      <label for="f-n">What needs to happen<input type="text" id="f-n" value="${esc(f.n)}" placeholder="${esc(PK.ex.work)}"></label>
       <div class="two"><label for="f-t">Type<select id="f-t">${Object.entries(TYPES).filter(([k])=>k!=='routine').map(([k,v])=>`<option value="${k}" ${f.t===k?'selected':''}>${v}</option>`).join('')}</select></label>
         <label for="f-team">Team<select id="f-team">${DEPTS.map(d=>`<option ${f.team===d?'selected':''}>${esc(d)}</option>`).join('')}</select></label></div>
       <div><span class="fl">How big, each week</span><div class="row">${SIZES.map(([l,h])=>`<button type="button" class="pk" data-act="fsize" data-h="${h}" aria-pressed="${f.h===h}">${l} · ${h}h</button>`).join('')}</div></div>
@@ -1540,24 +1686,8 @@ function dAddWork(){
     <div class="box fm"><label for="f-o">Owner<select id="f-o"><option value="auto" ${f.owner==='auto'?'selected':''}>${sg?`Suggested: ${esc(sg.p.n)} (most room)`:'Suggested: nobody on this team'}</option>${ps.map(p=>`<option value="${p.id}" ${f.owner===p.id?'selected':''}>${esc(p.n)}</option>`).join('')}<option value="queue" ${f.owner==='queue'?'selected':''}>Leave in the work queue</option></select></label>${impact}</div>
     <button type="button" class="btn" data-act="savework">Add work</button>`;
 }
-function newForm(link){ return {n:'',t:'support',team:st.scope&&st.scope!=='all'?st.scope:'Marketing',h:4,s:0,dur:2,links:link?[link]:[],owner:'auto'}; }
+function newForm(link){ return {n:'',t:'support',team:st.scope&&st.scope!=='all'?st.scope:DEPTS[0],h:4,s:0,dur:2,links:link?[link]:[],owner:'auto'}; }
 // ---------- project workspace ----------
-[
-  ['Site walkthrough with landlord','project','p9',4,-7,-6,['Clinic East Side','Facilities Requests']],
-  ['Clinic budget approved','meeting','p8',2,-6,-5,['Clinic East Side','Finance Close']],
-  ['Job postings for clinic roles','project','p6',6,-4,-1,['Clinic East Side']],
-  ['Weekend staffing plan','project','p7',6,-4,-2,['FS Weekend Hours Rollout']],
-  ['Requirements workshop','meeting','p11',4,-5,-4,['DS Case Mgmt Dashboard']],
-  ['Equipment quotes collected','project','p8',3,-2,-1,['Post Equipment Refresh']],
-  ['Exam room layout sign-off','meeting','p12',2,-2,-1,['Clinic East Side']]
-].forEach((r,k)=>ITEMS.push({id:nextId++,n:r[0],t:r[1],p:r[2],h:r[3],s:r[4],e:r[5],links:r[6],tent:false,st:k===6?'doing':'done'}));
-[
-  ['Annual report photo selects to designer','meeting','p1',2,-2,-2,[],'todo'],
-  ['Thanksgiving closure banner on LRI site','support','p1',1,-1,-1,['LRI website'],'todo'],
-  ['Clinic East Side launch post drafts','project','p1',3,-1,-1,['Clinic East Side','LRI website'],'doing'],
-  ['Holiday hours post for social','support','p1',1,-2,-2,['LRI website'],'done'],
-  ['Staff spotlight for the newsletter','support','p1',2,0,0,[],'todo']
-].forEach(r=>ITEMS.push({id:nextId++,n:r[0],t:r[1],p:r[2],h:r[3],s:r[4],e:r[5],links:r[6],tent:false,st:r[7]}));
 ITEMS.forEach(i=>{ if(!i.st) i.st = (!i.p||i.s>0)?'todo':'doing'; });
 // ---------- time tracking ----------
 // Days count from START (Mon Nov 30). Today is Tue Nov 24 = day -6, in week -1 (Nov 23 to 27).
@@ -1691,7 +1821,7 @@ function projectPage(){
 }
 function dTask(id){
   const i=ITEMS.find(x=>x.id===id), p=pById(i.p);
-  const team=i.p?p.d:(i.team||'Marketing');
+  const team=i.p?p.d:(i.team||DEPTS[0]);
   const ps=PEOPLE.filter(q=>q.d===team);
   const pl=arr=>arr.map(n=>`<label class="ck"><input type="checkbox" data-act="tlink" data-id="${i.id}" data-l="${esc(n)}" ${i.links.includes(n)?'checked':''}><span>${esc(n)}</span></label>`).join('');
   return `${st.taskBack?`<button type="button" class="back" data-act="person" data-p="${st.taskBack}">‹ ${esc(pById(st.taskBack).n)}</button>`:''}<div class="dh"><div><small>${TYPES[i.t]}${st.proj?' · '+esc(st.proj):''}</small><h2 id="dTitle">${esc(i.n)}</h2></div>${xBtn}</div>
@@ -1715,20 +1845,25 @@ function dTask(id){
 }
 function setStatus(i,v){ i.st=v; FEED.unshift({t:`${i.n} moved to ${STATUSES.find(s=>s[0]===v)[1]}`,s:`${i.links.join(', ')} · Just now`}); }
 // ---------- admin ----------
-const DIVS=['Administrative','Disability Services','Family Services','Integrative Healthcare','Post'];
 const STAGES=['Not approved yet','Planning','In progress','Launching'];
 const weekOpts=(sel,from,to)=>Array.from({length:to-from+1},(_,k)=>from+k).map(w=>`<option value="${w}" ${sel===w?'selected':''}>${wk(w)}</option>`).join('');
+function industryCard(){
+  return `<div class="card scopecard"><div class="cardh2"><div><b>Industry</b><span class="muted" style="font-size:13px"> · swaps the teams, roles, projects and sample work</span></div></div>
+    <div class="scopes">${Object.entries(INDUSTRIES).map(([k,v])=>`<button type="button" class="scopeb" data-act="industry" data-v="${k}" aria-pressed="${IND===k}"><b>${esc(v.label)}</b><span class="muted">${esc(v.blurb)}</span></button>`).join('')}</div>
+    <p class="muted" style="padding:0 20px 16px;font-size:13.5px">Switching reloads the planner with a fresh set of sample data for that industry. Changes you made to the current sample data are not kept.</p></div>`;
+}
 function adminView(){
   const prow=p=>{const n=projTasks(p.n).length;return `<button type="button" class="adr" data-act="editproj" data-n="${esc(p.n)}"><span><b>${esc(p.n)}</b><small>${esc(p.div)} · ${esc(p.owner)}</small></span><span><span class="chip n">${esc(p.stage)}</span></span><span>${p.pri}</span><span class="muted">${wk(p.s)} to ${wk(p.e)}</span><span class="r num">${n}</span></button>`;};
   const arow=a=>{const its=ITEMS.filter(i=>i.links.includes(a)&&!i.tent);const std=its.filter(i=>i.t==='routine');const h=std.reduce((s,i)=>s+i.h,0);const team=(its.find(i=>i.p)&&pById(its.find(i=>i.p).p).d)||AREA_TEAM[a]||'Not set';return `<button type="button" class="adr ar" data-act="editarea" data-n="${esc(a)}"><span><b>${esc(a)}</b><small>${esc(team)}</small></span><span class="r num">${h}h</span><span class="muted">${std.map(i=>esc(i.n)).join(', ')||'No standing work yet'}</span><span class="r num">${its.length}</span></button>`;};
   const tp=PEOPLE.filter(p=>st.scope!=='all'&&p.d===st.scope);
   return `${pageHead('Set up once, used everywhere','Admin','Add projects and ongoing work here. They show up in Portfolio, in the Work section and in every "Where does it help?" list.')}
+    ${industryCard()}
     <div class="card scopecard"><div class="cardh2"><div><b>Team view</b><span class="muted" style="font-size:13px"> · filter the whole workspace to one team</span></div>${st.scope!=='all'?`<button type="button" class="btn sec" data-act="scope" data-v="all">Show all teams</button>`:''}</div>
       <div class="scopes">${[['all','All teams',PEOPLE.length]].concat(DEPTS.map(d=>[d,d,PEOPLE.filter(p=>p.d===d).length])).map(([k,l,n])=>{const u=k==='all'?null:deptUtil(k,0).u;return `<button type="button" class="scopeb" data-act="scope" data-v="${esc(k)}" aria-pressed="${st.scope===k}"><b>${esc(l)}</b><span class="muted">${n} ${n===1?'person':'people'}${u!=null?` · ${Math.round(u*100)}% this week`:''}</span></button>`;}).join('')}</div>
       ${st.scope!=='all'?`<p class="muted" style="padding:0 20px 16px;font-size:13.5px">Overview, Teams, Work, Portfolio and Decisions now show only ${esc(st.scope)}: its people, the work they own or that is waiting for their team, the projects they work on, and the requests that need them. People on the team: ${tp.map(p=>esc(p.n)).join(', ')||'none yet'}.</p>`:''}</div>
     <div class="card"><div class="cardh2"><b>Projects</b><button type="button" class="btn" data-act="newproj">${ic('plus')} New project</button></div>
       <div class="scroll"><div class="adr adh"><span>Project</span><span>Stage</span><span>Priority</span><span>Window</span><span class="r">Tasks</span></div>${PROJECTS.filter(p=>projInScope(p.n)).map(prow).join('')}</div></div>
-    <div class="card"><div class="cardh2"><div><b>Ongoing work</b><span class="muted" style="font-size:13px"> · work that never closes, like the four websites</span></div><button type="button" class="btn" data-act="newarea">${ic('plus')} New ongoing work</button></div>
+    <div class="card"><div class="cardh2"><div><b>Ongoing work</b><span class="muted" style="font-size:13px"> · work that never closes, like a website, the help desk or payroll</span></div><button type="button" class="btn" data-act="newarea">${ic('plus')} New ongoing work</button></div>
       <div class="scroll"><div class="adr ar adh"><span>Area</span><span class="r">Standing hours / wk</span><span>Standing work</span><span class="r">Items</span></div>${AREAS.filter(a=>st.scope==='all'||ITEMS.some(i=>i.links.includes(a)&&itemTeam(i)===st.scope)||AREA_TEAM[a]===st.scope).map(arow).join('')}</div></div>`;
 }
 const AREA_TEAM={};
@@ -1736,7 +1871,7 @@ function dProjForm(){
   const f=st.pform, ed=!!f.orig;
   return `<div class="dh"><div><small>${ed?'Edit project':'New project'}</small><h2 id="dTitle">${ed?esc(f.orig):'Add a project'}</h2></div>${xBtn}</div>
     <div class="box fm">
-      <label for="p-n">Project name<input type="text" id="p-n" value="${esc(f.n)}" placeholder="Example: Wee Care enrollment portal"></label>
+      <label for="p-n">Project name<input type="text" id="p-n" value="${esc(f.n)}" placeholder="${esc(PK.ex.proj)}"></label>
       <div class="two"><label for="p-div">Division<select id="p-div">${DIVS.map(d=>`<option ${f.div===d?'selected':''}>${d}</option>`).join('')}</select></label>
         <label for="p-pri">Priority<select id="p-pri">${['High','Medium','Low'].map(x=>`<option ${f.pri===x?'selected':''}>${x}</option>`).join('')}</select></label></div>
       <div class="two"><label for="p-owner">Owner<input type="text" id="p-owner" value="${esc(f.owner)}" placeholder="Role or name"></label>
@@ -1757,7 +1892,7 @@ function dAreaForm(){
   return `<div class="dh"><div><small>${ed?'Edit ongoing work':'New ongoing work'}</small><h2 id="dTitle">${ed?esc(f.orig):'Add ongoing work'}</h2></div>${xBtn}</div>
     <p class="muted" style="font-size:13px">Ongoing work never closes, like a website, the help desk or payroll. Its standing hours count in someone's week, every week, without anyone logging them.</p>
     <div class="box fm">
-      <label for="a-n">Name<input type="text" id="a-n" value="${esc(f.n)}" placeholder="Example: Volunteer program"></label>
+      <label for="a-n">Name<input type="text" id="a-n" value="${esc(f.n)}" placeholder="${esc(PK.ex.area)}"></label>
       <label for="a-team">Owning team<select id="a-team">${DEPTS.map(d=>`<option ${f.team===d?'selected':''}>${esc(d)}</option>`).join('')}</select></label>
     </div>
     ${std.length?`<div class="sect">Standing work already set up</div><div class="list">${std.map(i=>`<button type="button" class="li" data-act="task" data-id="${i.id}"><span class="body"><b style="font-weight:500">${esc(i.n)}</b><small>${esc(pById(i.p).n)} · ${i.h}h every week</small></span>${ic('chev','chev')}</button>`).join('')}</div>`:''}
@@ -1790,7 +1925,7 @@ const TCOL={project:'var(--blue)',routine:'var(--accent)',support:'var(--warn-fi
 const isProj=n=>PROJECTS.some(p=>p.n===n);
 function signIn(){
   return `<div class="signin"><div class="card sbox">
-    <div><small class="muted">Liberty Resources · Capacity planner</small><h1 style="font-size:26px;margin-top:4px">Sign in</h1></div>
+    <div><small class="muted">${esc(PK.label)} · Capacity planner</small><h1 style="font-size:26px;margin-top:4px">Sign in</h1></div>
     <p class="muted">This is a simulated sign-in for the demo. In monday, each person lands on their own work with their own account. Pick someone to see what they would see.</p>
     <div class="plist">${PEOPLE.map(p=>{const n=ITEMS.filter(i=>i.p===p.id&&i.st!=='done').length;return `<button type="button" class="pbtn" data-act="signin" data-p="${p.id}"><span class="av">${esc(initials(p.n))}</span><span><b>${esc(p.n)}</b><small>${esc(p.role)} · ${n} open items</small></span></button>`;}).join('')}</div>
   </div></div>`;
@@ -1810,13 +1945,13 @@ function rolePicker(){
   const lastTxt=last[0]==='lead'?'Leadership':last[0]==='mgr'&&DEPTS.includes(last[1])?`${last[1]} team lead`:last[0]==='me'&&PEOPLE.some(p=>p.id===last[2])?pById(last[2]).n:'';
   if(st.rstep==='mgr') return `<div class="rp"><div class="rphead"><button type="button" class="back" data-act="rstep" data-v="">‹ Back</button><h1>Which team do you lead?</h1><p class="muted">You will see this team\u2019s people, capacity, work, time and the requests that need it.</p></div>
     <div class="rteams">${DEPTS.map(d=>{const ps=PEOPLE.filter(p=>p.d===d),r=deptUtil(d,0),[k,t]=word(r.u);return `<button type="button" class="rcard sm" data-act="setrole" data-r="mgr" data-team="${esc(d)}"><span class="rt"><b>${esc(d)}</b><span class="chip ${k}">${t}</span></span><small>${ps.length} ${ps.length===1?'person':'people'} · ${r.load} of ${r.cap}h next week</small></button>`;}).join('')}</div></div>`;
-  return `<div class="rp"><div class="rphead"><small class="muted">Liberty Resources · Capacity planner</small><h1>How are you using the planner today?</h1><p class="muted">Pick a role. What you see changes with it. This is simulated for the demo; in monday it comes from each person\u2019s account and permissions.</p></div>
+  return `<div class="rp"><div class="rphead"><small class="muted">${esc(PK.label)} · Capacity planner</small><h1>How are you using the planner today?</h1><p class="muted">Pick a role. What you see changes with it. This is simulated for the demo; in monday it comes from each person\u2019s account and permissions.</p></div>
     ${lastTxt?`<button type="button" class="rlast" data-act="rlast">${ic('chev')} Continue as <b>${esc(lastTxt)}</b></button>`:''}
-    <div class="rcards">${Object.entries(ROLES).map(([k,[l,i,d]])=>`<button type="button" class="rcard" data-act="${k==='mgr'?'rstep':'setrole'}" data-v="${k==='mgr'?'mgr':''}" data-r="${k}"><span class="ri">${ic(i)}</span><b>${l}</b><span class="muted">${d}</span><span class="rgo">${k==='lead'?'Open leadership view':k==='mgr'?'Choose your team':'Choose your name'} ›</span></button>`).join('')}</div></div>`;
+    <div class="rcards">${Object.entries(ROLES).map(([k,[l,i,d]])=>`<button type="button" class="rcard" data-act="${k==='mgr'?'rstep':'setrole'}" data-v="${k==='mgr'?'mgr':''}" data-r="${k}"><span class="ri">${ic(i)}</span><b>${l}</b><span class="muted">${d}</span><span class="rgo">${k==='lead'?'Open leadership view':k==='mgr'?'Choose your team':'Choose your name'} ›</span></button>`).join('')}</div>${industryCard()}</div>`;
 }
 function myTopbar(){
   const me=st.me?pById(st.me):null;
-  return `<div class="tb-title"><small>Liberty Resources <i></i> Capacity planner</small><b>My work</b></div>
+  return `<div class="tb-title"><small>${esc(PK.label)} <i></i> Capacity planner</small><b>My work</b></div>
     ${st.role?roleBtn():''}
     ${me?`<label class="tb-search">${ic('search')}<input id="mq" type="search" placeholder="Search my work" value="${esc(st.mq)}" aria-label="Search my work"></label>
     <div class="meu"><span class="av">${esc(initials(me.n))}</span><span class="nm"><b>${esc(me.n)}</b><small>${esc(me.d)}</small></span><button type="button" data-act="signout">Switch person</button></div>
@@ -1870,7 +2005,7 @@ function myWork(){
 }
 
 // ---------- personal timesheet ----------
-// Billing rule (to confirm with Liberty): time on work linked to a project is billable to that project; everything else is internal.
+// Billing rule (to confirm with the customer): time on work linked to a project is billable to that project; everything else is internal.
 const isBill=i=>i.links.some(l=>PROJECTS.some(p=>p.n===l));
 const chargeTo=i=>i.links.find(l=>PROJECTS.some(p=>p.n===l))||i.links[0]||'General / internal';
 const dayH=(i,d,pid)=>(i.logs||[]).filter(l=>l.by===pid&&l.d===d).reduce((a,l)=>a+l.h,0);
@@ -2042,7 +2177,7 @@ function topbar(){
   const hi=PROJECTS.filter(p=>p.pri==='High'&&p.stage!=='Not approved yet'&&projInScope(p.n)).length;
   const W4=[0,1,2,3]; const over=deptsV().filter(d=>W4.some(w=>deptUtil(d,w).u>1)).length;
   const late=ITEMS.filter(i=>overdue(i)&&!i.tent).length;
-  return `<div class="tb-title"><small>Liberty Resources <i></i> Capacity planner</small><b>${st.role==='mgr'?esc(st.scope)+' team':'Leadership Command'}</b></div>
+  return `<div class="tb-title"><small>${esc(PK.label)} <i></i> Capacity planner</small><b>${st.role==='mgr'?esc(st.scope)+' team':'Leadership Command'}</b></div>
     <label class="tb-proj"><small>Active project</small><select id="projsel" aria-label="Active project"><option value="">All projects</option>${PROJECTS.filter(p=>p.stage!=='Not approved yet').map(p=>`<option ${st.proj===p.n?'selected':''}>${esc(p.n)}</option>`).join('')}</select></label>
     <div class="tb-chips">${st.scope!=='all'&&st.role!=='mgr'?`<span class="tchip scope">${ic('teams')} ${esc(st.scope)} <button type="button" data-act="scope" data-v="all" aria-label="Show all teams">×</button></span>`:''}<button type="button" class="tchip" data-act="tab" data-tab="portfolio">${ic('layers')} ${PROJECTS.filter(p=>projInScope(p.n)).length} projects</button><button type="button" class="tchip red" data-act="tab" data-tab="portfolio">${ic('fire')} ${hi} high priority</button><button type="button" class="tchip redo" data-act="tab" data-tab="teams">${ic('alert')} ${over} team${over===1?'':'s'} over</button>${late?`<span class="tchip redo">${ic('alert')} ${late} overdue</span>`:''}</div>
     <label class="tb-search">${ic('search')}<input id="q" type="search" placeholder="Search projects" value="${esc(st.q)}" aria-label="Search projects"></label>
@@ -2119,7 +2254,7 @@ function navHTML(cls){if(!isAdv()) return '';const n=waiting().length;const tabs
 function render(){
   if(!st.role){
     document.getElementById('view').innerHTML=rolePicker();
-    document.getElementById('topbar').innerHTML=`<div class="tb-title"><small>Liberty Resources <i></i> Capacity planner</small><b>Welcome</b></div>`;
+    document.getElementById('topbar').innerHTML=`<div class="tb-title"><small>${esc(PK.label)} <i></i> Capacity planner</small><b>Welcome</b></div>`;
     ['nav','bnav'].forEach(id=>{const n=document.getElementById(id); n.innerHTML=''; n.hidden=true;});
     document.body.classList.remove('simple'); document.body.dataset.tab='role';
     document.getElementById('drawer').hidden=true; document.getElementById('scrim').hidden=true; return;
@@ -2227,8 +2362,8 @@ document.addEventListener('click',e=>{
       FEED.unshift({t:`New project added: ${f.n}`,s:`${f.div} · Just now`}); toast(`${f.n} added. It shows in Portfolio and in Work.`); }
     close(); }
   else if(a==='delproj'){ if(st.confirmDel!=='proj'){ st.confirmDel='proj'; render(); return; } const n=st.pform.orig; const k=PROJECTS.findIndex(p=>p.n===n); PROJECTS.splice(k,1); ITEMS.forEach(i=>{ i.links=i.links.filter(l=>l!==n); }); if(st.proj===n) st.proj=null; FEED.unshift({t:`Removed project ${n}`,s:'Its tasks stay in Work · Just now'}); toast('Project removed. Its tasks stay in Work.'); close(); }
-  else if(a==='newarea'){ const team='Marketing'; st.aform={orig:null,n:'',team,sn:'',sp:(PEOPLE.find(p=>p.d===team)||{}).id||'',sh:2}; open('aform'); setTimeout(()=>document.getElementById('a-n').focus(),30); }
-  else if(a==='editarea'){ const n=el.dataset.n; const its=ITEMS.filter(i=>i.links.includes(n)&&i.p); const team=its.length?pById(its[0].p).d:(AREA_TEAM[n]||'Marketing'); st.aform={orig:n,n,team,sn:'',sp:(PEOPLE.find(p=>p.d===team)||{}).id||'',sh:0}; open('aform'); }
+  else if(a==='newarea'){ const team=DEPTS[0]; st.aform={orig:null,n:'',team,sn:'',sp:(PEOPLE.find(p=>p.d===team)||{}).id||'',sh:2}; open('aform'); setTimeout(()=>document.getElementById('a-n').focus(),30); }
+  else if(a==='editarea'){ const n=el.dataset.n; const its=ITEMS.filter(i=>i.links.includes(n)&&i.p); const team=its.length?pById(its[0].p).d:(AREA_TEAM[n]||DEPTS[0]); st.aform={orig:n,n,team,sn:'',sp:(PEOPLE.find(p=>p.d===team)||{}).id||'',sh:0}; open('aform'); }
   else if(a==='savearea'){ readAreaForm(); const f=st.aform; if(!f.n){ toast('Give the ongoing work a name.'); document.getElementById('a-n').focus(); return; }
     if((!f.orig||f.orig!==f.n)&&(AREAS.includes(f.n)||PROJECTS.some(p=>p.n===f.n))){ toast('That name is already in use.'); return; }
     if(f.orig){ if(f.orig!==f.n){ AREAS[AREAS.indexOf(f.orig)]=f.n; ITEMS.forEach(i=>{ i.links=i.links.map(l=>l===f.orig?f.n:l); }); } }
@@ -2259,6 +2394,7 @@ document.addEventListener('click',e=>{
   else if(a==='pfstagef'){ st.pfStage=st.pfStage===el.dataset.v?'all':el.dataset.v; if(st.pfStage==='Not approved yet') st.pfHealth='all'; render(); const t=document.querySelector('.pt2'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }
   else if(a==='acf'){ st.acFilter=el.dataset.v; render(); }
   else if(a==='umr'){ st.umr=el.dataset.v; render(); }
+  else if(a==='industry'){ try{ localStorage.setItem('lw.industry',el.dataset.v); ['lw.team','lw.me'].forEach(k=>localStorage.removeItem(k)); if(st.role&&st.role!=='me') sessionStorage.setItem('lw.reopen','admin'); }catch(_){} location.reload(); }
   else if(a==='mode'){ st.mode=el.dataset.v; try{localStorage.setItem('lw.mode',st.mode);}catch(_){} st.drawer=null; toast(st.mode==='simple'?(st.me?`Simple mode: ${pById(st.me).n}'s work only.`:'Simple mode: sign in as one person.'):'Advanced mode: leadership views.'); render(); window.scrollTo({top:0}); }
   else if(a==='signin'){ st.me=el.dataset.p; st.mq=''; st.mlink='all'; st.log.l=''; try{localStorage.setItem('lw.me',st.me);}catch(_){} toast(`Signed in as ${pById(st.me).n}.`); render(); window.scrollTo({top:0}); }
   else if(a==='rolepick'){ st.role=null; st.rstep=null; st.drawer=null; render(); window.scrollTo({top:0}); }
@@ -2356,7 +2492,7 @@ document.addEventListener('dragend',e=>{ document.querySelectorAll('.dragging,.o
 document.addEventListener('dragover',e=>{ const col=e.target.closest&&e.target.closest('[data-drop]'); if(col&&dragId!=null){ e.preventDefault(); document.querySelectorAll('.col.over').forEach(x=>x!==col&&x.classList.remove('over')); col.classList.add('over'); }});
 document.addEventListener('drop',e=>{ const col=e.target.closest&&e.target.closest('[data-drop]'); if(col&&dragId!=null){ e.preventDefault(); const i=ITEMS.find(x=>x.id===dragId); if(i&&i.st!==col.dataset.drop){ setStatus(i,col.dataset.drop); toast(`Moved to ${STATUSES.find(x=>x[0]===col.dataset.drop)[1]}.`); } dragId=null; render(); }});
 document.addEventListener('submit',e=>{ const f=e.target; if(f.dataset.form!=='qadd') return; e.preventDefault(); const inp=f.querySelector('input'); const v=inp.value.trim(); if(!v) return;
-  const pr=PROJECTS.find(x=>x.n===st.proj); const any=ITEMS.find(i=>i.links.includes(st.proj)&&i.p); const team=any?pById(any.p).d:'Admin / Program';
+  const pr=PROJECTS.find(x=>x.n===st.proj); const any=ITEMS.find(i=>i.links.includes(st.proj)&&i.p); const team=any?pById(any.p).d:DEPTS[5];
   ITEMS.push({id:nextId++,n:v,t:'project',p:null,team,h:2,s:0,e:Math.min(WEEKS-1,1),links:[st.proj],tent:false,st:f.dataset.st,src:'Added on the board'});
   FEED.unshift({t:`New task on ${st.proj}`,s:`${v} · Just now`}); toast('Added. It sits in the work queue until someone owns it.'); render(); const n=document.getElementById(inp.id); if(n) n.focus(); });
 document.getElementById('scrim').addEventListener('click',close);
@@ -2364,6 +2500,7 @@ document.addEventListener('dblclick',e=>{ const el=e.target.closest('[data-act="
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&st.drawer) close(); });
 ['p2','p3','p4','p5','p6','p8','p9','p10','p11'].forEach(id=>{ const T=tsTotals(id,-2); if(T.tot) st.tsSub[tsKey(id,-2)]={on:'Nov 21',tot:T.tot,bill:T.bill,status:'submitted'}; });
 const h=location.hash.slice(1); if(ROUTES.includes(h)) goTab(h);
+try{ if(sessionStorage.getItem('lw.reopen')==='admin'){ sessionStorage.removeItem('lw.reopen'); setRole('lead'); st.tab='admin'; } }catch(_){}
 window.addEventListener('hashchange',()=>{const k=location.hash.slice(1); if(ROUTES.includes(k)){goTab(k);st.drawer=null;render();}});
 render();
 
